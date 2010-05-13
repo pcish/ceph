@@ -895,6 +895,14 @@ static int ceph_rename(struct inode *old_dir, struct dentry *old_dentry,
 	return err;
 }
 
+/*
+ * Ensure a dentry lease will no longer revalidate.
+ */
+void ceph_invalidate_dentry_lease(struct dentry *dentry)
+{
+	dentry->d_time = jiffies;
+	ceph_dentry(dentry)->lease_shared_gen = 0;
+}
 
 /*
  * Check if dentry lease is valid.  If not, delete the lease.  Try to
