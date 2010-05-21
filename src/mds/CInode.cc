@@ -1713,7 +1713,7 @@ int CInode::encode_inodestat(bufferlist& bl, Session *session,
   // xattr
   bufferlist xbl;
   e.xattr_version = i->xattr_version;
-  if (!had_latest_xattrs && cap) {
+  if (!had_latest_xattrs) {
     if (!pxattrs)
       pxattrs = pxattr ? get_projected_xattrs() : &xattrs;
     ::encode(*pxattrs, xbl);
