@@ -45,6 +45,7 @@ struct md_config_t {
   char *id;
   char *name;
   char *alt_name;
+  char *host;
 
   int num_mon;
   int num_mds;
@@ -262,6 +263,9 @@ struct md_config_t {
   float mds_bal_need_max;
   float mds_bal_midchunk;
   float mds_bal_minchunk;
+
+  int mds_bal_target_removal_min;
+  int mds_bal_target_removal_max;
 
   bool  mds_trim_on_rejoin;
   int   mds_shutdown_check;
