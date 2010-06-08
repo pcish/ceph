@@ -207,14 +207,14 @@ void MonClient::handle_monmap(MMonMap *m)
   ::decode(monmap, p);
   if (cur_mon >= monmap.size() || monmap.get_inst(cur_mon).addr != cur_mon_addr)
   {
+    cur_mon = -1;
     for (unsigned i=0; i<monmap.size(); i++)
     {
       if (cur_mon_addr == monmap.get_inst(i).addr)
       	_set_cur_mon(i);
     }
-    if (i >= monmap.size()) // can't find the mon we were talking to
+    if (cur_mon == -1) // can't find the mon we were talking to
     {
-      cur_mon = -1; // so _pick_new_mon won't mark some random monitor as down
       _pick_new_mon();
     }
   }
