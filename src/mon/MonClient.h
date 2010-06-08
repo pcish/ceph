@@ -50,6 +50,7 @@ private:
   Messenger *messenger;
 
   int cur_mon;
+  entity_addr_t cur_mon_addr;
 
   EntityName entity_name;
 
@@ -101,7 +102,7 @@ private:
   void _finish_hunting();
   void _reopen_session();
   void _pick_new_mon();
-  inline void _set_cur_mon();
+  inline void _set_cur_mon(int new_mon);
   void _send_mon_message(Message *m, bool force=false);
 
 public:
