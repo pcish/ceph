@@ -101,6 +101,7 @@ private:
   void _finish_hunting();
   void _reopen_session();
   void _pick_new_mon();
+  inline void _set_cur_mon();
   void _send_mon_message(Message *m, bool force=false);
 
 public:

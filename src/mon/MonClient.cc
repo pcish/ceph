@@ -202,10 +202,22 @@ void MonClient::handle_monmap(MMonMap *m)
 {
   dout(10) << "handle_monmap " << *m << dendl;
   monc_lock.Lock();
-
+  
   bufferlist::iterator p = m->monmapbl.begin();
   ::decode(monmap, p);
-
+  if (cur_mon >= monmap.size() || monmap.get_inst(cur_mon).addr != cur_mon_addr)
+  {
+    for (unsigned i=0; i<monmap.size(); i++)
+    {
+      if (cur_mon_addr == monmap.get_inst(i).addr)
+      	_set_cur_mon(i);
+    }
+    if (i >= monmap.size()) // can't find the mon we were talking to
+    {
+      cur_mon = -1; // so _pick_new_mon won't mark some random monitor as down
+      _pick_new_mon();
+    }
+  }
   dout(10) << " got monmap " << monmap.epoch << dendl;
 
   _sub_got("monmap", monmap.get_epoch());
@@ -369,11 +381,17 @@ void MonClient::_pick_new_mon()
     int n = rand() % (monmap.size() - 1);
     if (n >= cur_mon)
       n++;
-    cur_mon = n;
+    _set_cur_mon(n);
   } else {
-    cur_mon = rand() % monmap.size();
+    _set_cur_mon(rand() % monmap.size());
   }
   dout(10) << "_pick_new_mon picked mon" << cur_mon << dendl;
+}
+
+inline void MonClient::_set_cur_mon(int new_mon)
+{
+  cur_mon = new_mon;
+  cur_mon_addr = monmap.get_inst(cur_mon).addr;
 }
 
 void MonClient::_reopen_session()
